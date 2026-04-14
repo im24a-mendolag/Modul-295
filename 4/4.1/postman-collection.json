@@ -1,0 +1,72 @@
+{
+  "info": {
+    "name": "Modul 295 - 4.1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "ZLI HTML",
+      "request": {
+        "method": "GET",
+        "url": "https://www.zli.ch"
+      }
+    },
+    {
+      "name": "ZLI 404",
+      "request": {
+        "method": "GET",
+        "url": "https://www.zli.ch/doesnotexist"
+      }
+    },
+    {
+      "name": "Picsum Image",
+      "request": {
+        "method": "GET",
+        "url": "https://picsum.photos/200"
+      }
+    },
+    {
+      "name": "PokeAPI - Pikachu",
+      "request": {
+        "method": "GET",
+        "url": "https://pokeapi.co/api/v2/pokemon/pikachu"
+      }
+    },
+    {
+      "name": "SpaceX Latest Launch",
+      "request": {
+        "method": "GET",
+        "url": "https://api.spacexdata.com/v5/launches/latest"
+      }
+    },
+    {
+      "name": "JSONPlaceholder Posts",
+      "request": {
+        "method": "GET",
+        "url": "https://jsonplaceholder.typicode.com/posts"
+      }
+    },
+    {
+      "name": "HTTPBin POST",
+      "request": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Giovanni\",\n  \"age\": 18\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
