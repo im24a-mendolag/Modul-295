@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<person>
+  <vorname>Giovanni</vorname>
+  <nachname>Mendola</nachname>
+  <alter>18</alter>
+  <wohnort>Zürich</wohnort>
+</person>
