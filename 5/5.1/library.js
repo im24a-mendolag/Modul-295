@@ -25,18 +25,23 @@ app.post('/books', (request, response) => {
 
 app.put('/books/:isbn', (request, response) => {
   const isbn = Number(request.params.isbn)
+  const index = books.findIndex(book => book.isbn == isbn)
   request.body = { ...request.body, isbn: isbn }
-  books[books.findIndex(book => book.isbn == isbn)] = request.body
-  response.json(book[books.findIndex(book => book.isbn == isbn)])
+  books[index] = request.body
+  response.json(books[index])
 });
 
-app.delete('/books', (request, response) => {
+app.delete('/books/:isbn', (request, response) => {
+  const isbn = Number(request.params.isbn)
+  books = books.filter(item => item !== isbn);
   response.json(books);
 });
 
 app.patch('/books/:isbn', (request, response) => {
   const isbn = Number(request.params.isbn)
-  response.type('json').send(books.find(book => book.isbn == isbn))
+  const index = books.findIndex(book => book.isbn == isbn)
+  books[index] = { ...books[index], ...request.body, isbn: isbn }
+  response.json(books[index])
 });
 
 app.listen(port, () => {
