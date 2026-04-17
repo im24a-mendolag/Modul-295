@@ -75,8 +75,8 @@ Start the server and open [http://localhost:3000/docs](http://localhost:3000/doc
 
 ## Testing
 
-Import the Hoppscotch collection from `hoppscotch-collection.json` (if provided) or test manually:
-
-1. `POST /login` with `{ "username": "admin", "password": "password123" }`
-2. Copy the token from the response
-3. Add `Authorization: Bearer <token>` header to all `/tasks` requests
+1. Open [Hoppscotch](https://hoppscotch.io)
+2. Go to **Collections → Import → Import from JSON** and select `hoppscotch-collection.json`
+3. Run **Auth → Login** first and copy the `token` from the response
+4. Replace `<<token>>` in all other requests with your token
+5. For task-specific requests, replace `<<id>>` with a real task ID from the list response

@@ -1,0 +1,169 @@
+{
+  "v": 2,
+  "name": "Task Management API",
+  "folders": [
+    {
+      "v": 2,
+      "name": "1 - Login",
+      "folders": [],
+      "requests": [
+        {
+          "v": "3",
+          "id": "auth-login",
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "http://localhost:3000/login",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json", "active": true, "description": "" }
+          ],
+          "params": [],
+          "auth": { "authType": "none", "authActive": false },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+          },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"Response has token\", () => {\n  pw.expect(pw.response.body).toHaveProperty(\"token\");\n});\npw.env.set(\"token\", pw.response.body.token);",
+          "requestVariables": []
+        }
+      ]
+    },
+    {
+      "v": 2,
+      "name": "2 - Tasks",
+      "folders": [],
+      "requests": [
+        {
+          "v": "3",
+          "id": "tasks-create",
+          "name": "Create Task",
+          "method": "POST",
+          "endpoint": "http://localhost:3000/tasks",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json", "active": true, "description": "" }
+          ],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"title\": \"My first task\",\n  \"description\": \"This is a test task\",\n  \"dueDate\": \"2026-12-31T23:59:00.000Z\"\n}"
+          },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 201\", () => {\n  pw.expect(pw.response.status).toBe(201);\n});\npw.test(\"Response has id\", () => {\n  pw.expect(pw.response.body).toHaveProperty(\"id\");\n});\npw.test(\"Title matches\", () => {\n  pw.expect(pw.response.body.title).toBe(\"My first task\");\n});\npw.test(\"completedAt is null\", () => {\n  pw.expect(pw.response.body.completedAt).toBeNull();\n});\npw.env.set(\"id\", pw.response.body.id);",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "tasks-get-all",
+          "name": "Get All Tasks",
+          "method": "GET",
+          "endpoint": "http://localhost:3000/tasks",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"Response is an array\", () => {\n  pw.expect(Array.isArray(pw.response.body)).toBe(true);\n});",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "tasks-get-one",
+          "name": "Get Task by ID",
+          "method": "GET",
+          "endpoint": "http://localhost:3000/tasks/<<id>>",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"Response has id\", () => {\n  pw.expect(pw.response.body).toHaveProperty(\"id\");\n});",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "tasks-update",
+          "name": "Update Task",
+          "method": "PUT",
+          "endpoint": "http://localhost:3000/tasks/<<id>>",
+          "headers": [
+            { "key": "Content-Type", "value": "application/json", "active": true, "description": "" }
+          ],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"title\": \"Updated task title\",\n  \"description\": \"Updated description\",\n  \"dueDate\": \"2026-12-31T23:59:00.000Z\"\n}"
+          },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"Title was updated\", () => {\n  pw.expect(pw.response.body.title).toBe(\"Updated task title\");\n});",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "tasks-done",
+          "name": "Mark Task as Done",
+          "method": "POST",
+          "endpoint": "http://localhost:3000/tasks/<<id>>/done",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"completedAt is set\", () => {\n  pw.expect(pw.response.body.completedAt).not.toBeNull();\n});",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "tasks-delete",
+          "name": "Delete Task",
+          "method": "DELETE",
+          "endpoint": "http://localhost:3000/tasks/<<id>>",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});",
+          "requestVariables": []
+        }
+      ]
+    },
+    {
+      "v": 2,
+      "name": "3 - Logout",
+      "folders": [],
+      "requests": [
+        {
+          "v": "3",
+          "id": "auth-verify",
+          "name": "Verify Token",
+          "method": "GET",
+          "endpoint": "http://localhost:3000/verify",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});\npw.test(\"Token is valid\", () => {\n  pw.expect(pw.response.body.valid).toBe(true);\n});",
+          "requestVariables": []
+        },
+        {
+          "v": "3",
+          "id": "auth-logout",
+          "name": "Logout",
+          "method": "DELETE",
+          "endpoint": "http://localhost:3000/logout",
+          "headers": [],
+          "params": [],
+          "auth": { "authType": "bearer", "token": "<<token>>", "authActive": true },
+          "body": { "contentType": null, "body": null },
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Status is 200\", () => {\n  pw.expect(pw.response.status).toBe(200);\n});",
+          "requestVariables": []
+        }
+      ]
+    }
+  ],
+  "requests": []
+}

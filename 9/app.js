@@ -1,4 +1,6 @@
+const path = require("path");
 const express = require("express");
+const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 
@@ -8,6 +10,7 @@ const taskRoutes = require("./src/routes/tasks");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 const swaggerSpec = swaggerJsdoc({
@@ -50,7 +53,7 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: ["./src/routes/*.js"],
+  apis: [path.join(__dirname, "./src/routes/*.js")],
 });
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

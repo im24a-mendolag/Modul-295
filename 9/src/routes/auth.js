@@ -1,10 +1,8 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
-const { users, tokenBlacklist } = require("../data/store");
+const ctrl = require("../controllers/authController");
 const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 /**
  * @openapi
@@ -30,20 +28,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
  *       401:
  *         description: Invalid credentials
  */
-router.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find((u) => u.username === username && u.password === password);
-
-  if (!user) {
-    return res.status(401).json({ error: "Invalid credentials" });
-  }
-
-  const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, {
-    expiresIn: "8h",
-  });
-
-  return res.status(200).json({ token });
-});
+router.post("/login", ctrl.login);
 
 /**
  * @openapi
@@ -59,9 +44,7 @@ router.post("/login", (req, res) => {
  *       401:
  *         description: Token is invalid or missing
  */
-router.get("/verify", requireAuth, (req, res) => {
-  return res.status(200).json({ valid: true, user: req.user });
-});
+router.get("/verify", requireAuth, ctrl.verify);
 
 /**
  * @openapi
@@ -77,9 +60,6 @@ router.get("/verify", requireAuth, (req, res) => {
  *       401:
  *         description: Token missing or already invalid
  */
-router.delete("/logout", requireAuth, (req, res) => {
-  tokenBlacklist.add(req.token);
-  return res.status(200).json({ message: "Logged out successfully" });
-});
+router.delete("/logout", requireAuth, ctrl.logout);
 
 module.exports = router;

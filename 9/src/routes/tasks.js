@@ -1,6 +1,5 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
-const { tasks } = require("../data/store");
+const ctrl = require("../controllers/taskController");
 const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
@@ -25,9 +24,7 @@ router.use(requireAuth);
  *               items:
  *                 $ref: '#/components/schemas/Task'
  */
-router.get("/", (req, res) => {
-  return res.status(200).json(tasks);
-});
+router.get("/", ctrl.getAll);
 
 /**
  * @openapi
@@ -53,25 +50,7 @@ router.get("/", (req, res) => {
  *       400:
  *         description: Validation error
  */
-router.post("/", (req, res) => {
-  const { title, description, dueDate } = req.body;
-
-  if (!title || title.trim() === "") {
-    return res.status(400).json({ error: "title is required and cannot be empty" });
-  }
-
-  const task = {
-    id: uuidv4(),
-    title: title.trim(),
-    description: description || null,
-    createdAt: new Date().toISOString(),
-    dueDate: dueDate || null,
-    completedAt: null,
-  };
-
-  tasks.push(task);
-  return res.status(201).json(task);
-});
+router.post("/", ctrl.create);
 
 /**
  * @openapi
@@ -97,13 +76,7 @@ router.post("/", (req, res) => {
  *       404:
  *         description: Task not found
  */
-router.get("/:id", (req, res) => {
-  const task = tasks.find((t) => t.id === req.params.id);
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-  return res.status(200).json(task);
-});
+router.get("/:id", ctrl.getOne);
 
 /**
  * @openapi
@@ -128,37 +101,12 @@ router.get("/:id", (req, res) => {
  *     responses:
  *       200:
  *         description: Task updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Task'
  *       400:
  *         description: Validation error
  *       404:
  *         description: Task not found
  */
-router.put("/:id", (req, res) => {
-  const index = tasks.findIndex((t) => t.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  const { title, description, dueDate } = req.body;
-
-  if (!title || title.trim() === "") {
-    return res.status(400).json({ error: "title is required and cannot be empty" });
-  }
-
-  const updated = {
-    ...tasks[index],
-    title: title.trim(),
-    description: description || null,
-    dueDate: dueDate || null,
-  };
-
-  tasks[index] = updated;
-  return res.status(200).json(updated);
-});
+router.put("/:id", ctrl.replace);
 
 /**
  * @openapi
@@ -180,15 +128,7 @@ router.put("/:id", (req, res) => {
  *       404:
  *         description: Task not found
  */
-router.delete("/:id", (req, res) => {
-  const index = tasks.findIndex((t) => t.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  const deleted = tasks.splice(index, 1)[0];
-  return res.status(200).json(deleted);
-});
+router.delete("/:id", ctrl.remove);
 
 /**
  * @openapi
@@ -207,21 +147,9 @@ router.delete("/:id", (req, res) => {
  *     responses:
  *       200:
  *         description: Task marked as done
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Task'
  *       404:
  *         description: Task not found
  */
-router.post("/:id/done", (req, res) => {
-  const task = tasks.find((t) => t.id === req.params.id);
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
-
-  task.completedAt = new Date().toISOString();
-  return res.status(200).json(task);
-});
+router.post("/:id/done", ctrl.markDone);
 
 module.exports = router;
