@@ -1,0 +1,20 @@
+{
+  "name": "7.3",
+  "version": "1.0.0",
+  "description": "Library REST API with session authentication",
+  "main": "library.js",
+  "scripts": {
+    "start": "node library.js",
+    "swagger": "node swagger.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

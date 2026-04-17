@@ -1,0 +1,386 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Library API",
+    "description": "REST API for managing books and lends",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authentication – login, verify, logout"
+    },
+    {
+      "name": "Books",
+      "description": "Book management"
+    },
+    {
+      "name": "Lends",
+      "description": "Lend management (requires login)"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Log in with email and password",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "desk@library.example"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "m295"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Login successful, returns email"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+    "/verify": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Verify if the current session is authenticated",
+        "responses": {
+          "200": {
+            "description": "Authenticated – returns email"
+          },
+          "401": {
+            "description": "Not authenticated"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "delete": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Log out – destroys the current session",
+        "responses": {
+          "204": {
+            "description": "Logged out successfully"
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Returns all books",
+        "responses": {
+          "200": {
+            "description": "List of all books"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Creates a new book",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "isbn": {
+                  "type": "number",
+                  "example": 3
+                },
+                "title": {
+                  "type": "string",
+                  "example": "New Book"
+                },
+                "year": {
+                  "type": "number",
+                  "example": 2024
+                },
+                "author": {
+                  "type": "string",
+                  "example": "Author Name"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book created successfully"
+          },
+          "422": {
+            "description": "Missing required fields"
+          }
+        }
+      }
+    },
+    "/books/{isbn}": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Returns a single book by ISBN",
+        "parameters": [
+          {
+            "name": "isbn",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ISBN of the book"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book found"
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Replaces an entire book by ISBN",
+        "parameters": [
+          {
+            "name": "isbn",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ISBN of the book"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "Updated Title"
+                },
+                "year": {
+                  "type": "number",
+                  "example": 2024
+                },
+                "author": {
+                  "type": "string",
+                  "example": "Author Name"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book replaced successfully"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Partially updates a book by ISBN",
+        "parameters": [
+          {
+            "name": "isbn",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ISBN of the book"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "year": {
+                  "type": "number",
+                  "example": 2025
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Books"
+        ],
+        "description": "Deletes a book by ISBN",
+        "parameters": [
+          {
+            "name": "isbn",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ISBN of the book"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book deleted, returns remaining books"
+          }
+        }
+      }
+    },
+    "/lends": {
+      "get": {
+        "tags": [
+          "Lends"
+        ],
+        "description": "Returns all lends (requires login)",
+        "responses": {
+          "200": {
+            "description": "List of all lends"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lends"
+        ],
+        "description": "Borrows a book for a customer (requires login)",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customerId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "isbn": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Lend created successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Customer already has 3 open lends"
+          },
+          "404": {
+            "description": "Customer or book not found"
+          },
+          "409": {
+            "description": "Book is already borrowed"
+          },
+          "422": {
+            "description": "Missing customerId or isbn"
+          }
+        }
+      }
+    },
+    "/lends/{id}": {
+      "get": {
+        "tags": [
+          "Lends"
+        ],
+        "description": "Returns a single lend by ID (requires login)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the lend"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lend found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Lend not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lends"
+        ],
+        "description": "Returns a book – sets returnedAt timestamp (requires login)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the lend"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book returned successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Lend not found"
+          }
+        }
+      }
+    }
+  }
+}
