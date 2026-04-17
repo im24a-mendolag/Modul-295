@@ -6,6 +6,7 @@ const swaggerJsdoc = require("swagger-jsdoc");
 
 const authRoutes = require("./src/routes/auth");
 const taskRoutes = require("./src/routes/tasks");
+const { errorHandler } = require("./src/middleware/errorHandler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,6 +60,8 @@ const swaggerSpec = swaggerJsdoc({
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(authRoutes);
 app.use("/tasks", taskRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
